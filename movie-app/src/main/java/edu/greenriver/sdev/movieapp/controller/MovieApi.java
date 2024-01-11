@@ -45,6 +45,11 @@ public class MovieApi
     @GetMapping("movies/{title}")
     public Movie byTitle(@PathVariable String title)
     {
+        return getMovie(title);
+    }
+
+    private Movie getMovie(String title)
+    {
         for (int i = 0; i < movies.size(); i++)
         {
             Movie next = movies.get(i);
@@ -83,5 +88,27 @@ public class MovieApi
     public void addMovie(@RequestBody Movie newMovie)
     {
         movies.add(newMovie);
+    }
+
+    @PutMapping("movies/{title}")
+    public Movie updateMovie(@PathVariable String title,
+                            @RequestBody Movie updatedMovie)
+    {
+        //find the movie that matches
+        Movie savedMovie = getMovie(title);
+
+        //update the data in the movie
+        savedMovie.setGenre(updatedMovie.getGenre());
+        savedMovie.setYear(updatedMovie.getYear());
+        savedMovie.setInternational(updatedMovie.isInternational());
+        savedMovie.setRating(updatedMovie.getRating());
+
+        return savedMovie;
+    }
+
+    @DeleteMapping("")
+    public void deleteMovie()
+    {
+
     }
 }
