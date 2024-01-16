@@ -14,6 +14,11 @@ public class MovieApi
 {
     private MovieService service;
 
+    public MovieApi(MovieService service)
+    {
+        this.service = service;
+    }
+
     //respond to (GET) requests at localhost:3000/movies/random
     @GetMapping("movies/random")
     public Movie getRandom()
