@@ -70,6 +70,7 @@ public class MovieService
 
     public Movie updateMovie(Movie updatedMovie, String title)
     {
+
         //find the movie that matches
         /*Movie savedMovie = movies.get(movieIndexOf(title));
 
@@ -83,6 +84,25 @@ public class MovieService
         return null;
     }
 
+    public Movie updateMovie(Movie updatedMovie, int id)
+    {
+        Movie currentMovie = repository.findById(id).orElseThrow();
+
+        currentMovie.setRating(updatedMovie.getRating());
+        currentMovie.setInternational(updatedMovie.isInternational());
+        currentMovie.setGenre(updatedMovie.getGenre());
+        currentMovie.setReleaseYear(updatedMovie.getReleaseYear());
+        currentMovie.setTitle(updatedMovie.getTitle());
+
+        //this is add or update
+        return repository.save(currentMovie);
+    }
+
+    public void deleteMovie(int id)
+    {
+        repository.deleteById(id);
+    }
+
     public void deleteMovie(String title)
     {
         /*int index = movieIndexOf(title);
@@ -92,7 +112,7 @@ public class MovieService
     //returns the index where the matching movie title is found
     private int movieIndexOf(String title)
     {
-        List<Movie> movies = repository.findAll();
+        /*List<Movie> movies = repository.findAll();
         for (int i = 0; i < movies.size(); i++)
         {
             Movie next = movies.get(i);
@@ -100,8 +120,13 @@ public class MovieService
             {
                 return i;
             }
-        }
+        }*/
 
         return -1;
+    }
+
+    public Movie byId(int id)
+    {
+        return repository.findById(id).orElseThrow();
     }
 }
