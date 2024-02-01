@@ -2,6 +2,8 @@ package edu.greenriver.sdev.movieapp.controller;
 
 import edu.greenriver.sdev.movieapp.domain.Movie;
 import edu.greenriver.sdev.movieapp.service.MovieService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.Random;
 
 //a web api to deliver movies...
 @RestController
+@RequestMapping("api/v1/movies")
 public class MovieApi
 {
     private MovieService service;
@@ -20,52 +23,78 @@ public class MovieApi
     }
 
     //respond to (GET) requests at localhost:3000/movies/random
-    @GetMapping("movies/random")
-    public Movie getRandom()
+    @GetMapping("random")
+    public ResponseEntity<Movie> getRandom()
     {
-        return service.getRandomMovie();
+        return new ResponseEntity<>(service.getRandomMovie(), HttpStatus.OK);
     }
 
-    @GetMapping("movies/all")
-    public List<Movie> all()
+    @GetMapping("all")
+    public ResponseEntity<List<Movie>> all()
     {
-        return service.all();
+        return new ResponseEntity<>(service.all(), HttpStatus.OK);
     }
 
-    @GetMapping("movies/title/{title}")
-    public Movie byTitle(@PathVariable String title)
+    @GetMapping("title/{title}")
+    public ResponseEntity<Movie> byTitle(@PathVariable String title)
     {
-        return service.byTitle(title);
+        return new ResponseEntity<>(service.byTitle(title), HttpStatus.OK);
     }
 
-    @GetMapping("movies/{id}")
-    public Movie byId(@PathVariable int id)
+    @GetMapping("{id}")
+    public ResponseEntity<Movie> byId(@PathVariable int id)
     {
-        return service.byId(id);
+        Movie movie = service.byId(id);
+        if (movie == null)
+        {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        else
+        {
+            return new ResponseEntity(movie, HttpStatus.OK);
+        }
     }
 
-    @GetMapping("movies/year/{year}")
-    public List<Movie> byYear(@PathVariable int year)
+    @GetMapping("year/{year}")
+    public ResponseEntity<List<Movie>> byYear(@PathVariable int year)
     {
-        return service.byYear(year);
+        return new ResponseEntity(service.byYear(year), HttpStatus.OK);
     }
 
-    @PostMapping("movies")
-    public void addMovie(@RequestBody Movie newMovie)
+    @PostMapping("")
+    public ResponseEntity addMovie(@RequestBody Movie newMovie)
     {
-        service.addMovie(newMovie);
+        return new ResponseEntity(service.addMovie(newMovie), HttpStatus.CREATED);
     }
 
-    @PutMapping("movies/{id}")
-    public Movie updateMovie(@PathVariable int id,
+    @PutMapping("{id}")
+    public ResponseEntity<Movie> updateMovie(@PathVariable int id,
                             @RequestBody Movie updatedMovie)
     {
-        return service.updateMovie(updatedMovie, id);
+        Movie movie = service.byId(id);
+        if (movie == null)
+        {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        else
+        {
+            return new ResponseEntity(service.updateMovie(updatedMovie, id),
+                    HttpStatus.OK);
+        }
     }
 
-    @DeleteMapping("movies/{id}")
-    public void deleteMovie(@PathVariable int id)
+    @DeleteMapping("{id}")
+    public ResponseEntity deleteMovie(@PathVariable int id)
     {
-        service.deleteMovie(id);
+        Movie movie = service.byId(id);
+        if (movie == null)
+        {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        else
+        {
+            service.deleteMovie(id);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
     }
 }

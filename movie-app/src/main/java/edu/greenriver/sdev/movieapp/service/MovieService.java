@@ -40,9 +40,19 @@ public class MovieService
 
     public Movie byTitle(String title)
     {
+        List<Movie> results = new ArrayList<>();
         List<Movie> movies = repository.findAll();
-        int index = movieIndexOf(title);
-        return movies.get(index);
+
+        for (int i = 0; i < movies.size(); i++)
+        {
+            Movie next = movies.get(i);
+            if (next.getTitle().equals(title))
+            {
+                return next;
+            }
+        }
+
+        return null;
     }
 
     public List<Movie> byYear(int year)
@@ -62,26 +72,10 @@ public class MovieService
         return results;
     }
 
-    public void addMovie(Movie movie)
+    public Movie addMovie(Movie movie)
     {
         //this will result in an INSERT SQL statement
-        repository.save(movie);
-    }
-
-    public Movie updateMovie(Movie updatedMovie, String title)
-    {
-
-        //find the movie that matches
-        /*Movie savedMovie = movies.get(movieIndexOf(title));
-
-        //update the data in the movie
-        savedMovie.setGenre(updatedMovie.getGenre());
-        savedMovie.setReleaseYear(updatedMovie.getReleaseYear());
-        savedMovie.setInternational(updatedMovie.isInternational());
-        savedMovie.setRating(updatedMovie.getRating());
-
-        return savedMovie;*/
-        return null;
+        return repository.save(movie);
     }
 
     public Movie updateMovie(Movie updatedMovie, int id)
@@ -103,30 +97,8 @@ public class MovieService
         repository.deleteById(id);
     }
 
-    public void deleteMovie(String title)
-    {
-        /*int index = movieIndexOf(title);
-        movies.remove(index);*/
-    }
-
-    //returns the index where the matching movie title is found
-    private int movieIndexOf(String title)
-    {
-        /*List<Movie> movies = repository.findAll();
-        for (int i = 0; i < movies.size(); i++)
-        {
-            Movie next = movies.get(i);
-            if (next.getTitle().equalsIgnoreCase(title))
-            {
-                return i;
-            }
-        }*/
-
-        return -1;
-    }
-
     public Movie byId(int id)
     {
-        return repository.findById(id).orElseThrow();
+        return repository.findById(id).orElse(null);
     }
 }
