@@ -13,6 +13,7 @@ import java.util.Random;
 //a web api to deliver movies...
 @RestController
 @RequestMapping("api/v1/movies")
+@CrossOrigin(origins = "*")
 public class MovieApi
 {
     private MovieService service;
@@ -64,7 +65,8 @@ public class MovieApi
     @PostMapping("")
     public ResponseEntity addMovie(@RequestBody Movie newMovie)
     {
-        return new ResponseEntity(service.addMovie(newMovie), HttpStatus.CREATED);
+        return new ResponseEntity(service.addMovie(newMovie),
+                HttpStatus.CREATED);
     }
 
     @PutMapping("{id}")
